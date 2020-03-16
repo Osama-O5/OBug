@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Task', 'Hours per Day'],
+          [ 'MVA10'  ,  45 ]
+,[ 'SpeedChecker'  ,  12 ]
+,[ 'Netperform RS'  ,  11 ]
+,[ 'App.Settings'  ,  5 ]
+,[ 'GR Billing'  ,  4 ]
+,[ 'Dashboard'  ,  3 ]
+,[ 'CommonUI'  ,  3 ]
+,[ 'Netperform'  ,  3 ]
+,[ 'Tray-SubTrayAnimations'  ,  2 ]
+,[ 'EIO'  ,  2 ]
+,[ '2nd&amp;ThirdLevelPages'  ,  2 ]
+,[ 'OnBoarding'  ,  2 ]
+,[ 'OOBE'  ,  1 ]
+,[ 'DevelpoerSettings'  ,  1 ]
+,[ 'Refresh'  ,  1 ]
+,[ 'Meeseges'  ,  1 ]
+        ]);
+
+        var options = {
+          title: 'Effected Modules',
+          is3D: true,
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+        chart.draw(data, options);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="piechart_3d" style="width: 900px; height: 500px;"></div>
+  </body>
+</html>
