@@ -23,7 +23,8 @@ abstract public class BaseTest {
 
     public static void Caps(String Driver, String Driver_Path) {
         DesiredCapabilities caps = new DesiredCapabilities();
-        System.setProperty(Driver, Driver_Path);
+        String path = System.getProperty("user.dir");
+        System.setProperty(Driver, path +Driver_Path);
         System.setProperty("https.protocols", "TLSv1.2");
         driver = new ChromeDriver(caps);
         driver.manage().window().maximize();

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.github.Osama-O5</groupId>
+  <artifactId>OSSRH-55931</artifactId>
+  <versioning>
+    <versions>
+      <version>1.0-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20200318183856</lastUpdated>
+  </versioning>
+</metadata>
