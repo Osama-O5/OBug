@@ -6,9 +6,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Autonomous Testing" />
         <module name="Autonomous-Testing" />
+        <module name="Autonomous Testing" />
+        <module name="OSSRH-55931" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Autonomous-Testing" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

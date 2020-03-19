@@ -1,4 +1,4 @@
-# Created at 2020-03-18T20:38:55.514
+# Created at 2020-03-19T12:13:14.387
 org.apache.maven.surefire.testset.TestSetFailedException: Suite file /Users/osamakhaled/Documents/GitHub/Autonomous-Testing/TestNG.xml is not a valid file
 	at org.apache.maven.surefire.testng.TestNGXmlTestSuite.locateTestSets(TestNGXmlTestSuite.java:99)
 	at org.apache.maven.surefire.testng.TestNGProvider.invoke(TestNGProvider.java:119)

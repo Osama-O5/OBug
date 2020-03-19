@@ -9,7 +9,7 @@ import java.io.*;
 import java.util.*;
 import java.util.List;
 
-abstract public class BaseTest {
+abstract public class obug {
 
     public static WebDriver driver;
     static LinkedHashMap<String, Integer> sortedMap;
@@ -58,7 +58,7 @@ abstract public class BaseTest {
             Integer j = Counter.get(i);
             Counter.put(i, (j == null) ? 1 : j + 1);
         }
-        BaseTest.sortedMap = new LinkedHashMap<>();
+        obug.sortedMap = new LinkedHashMap<>();
         Counter.entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
@@ -74,7 +74,7 @@ abstract public class BaseTest {
             list.add(module);
         }
 
-        BaseTest.countFrequencies(list);
+        obug.countFrequencies(list);
         driver.quit();
     }
 
