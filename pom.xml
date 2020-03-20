@@ -8,6 +8,13 @@
     <artifactId>OSSRH-55931</artifactId>
     <version>1.0.0</version>
 
+    <scm>
+        <connection>scm:git:git://github.com/Osama-O5/OSSRH-55931.git</connection>
+        <developerConnection>scm:git:git@github.com/Osama-O5/OSSRH-55931.git</developerConnection>
+        <url>https://github.com/Osama-O5/OSSRH-55931</url>
+        <tag>HEAD</tag>
+    </scm>
+    
     <dependencies>
 
     <dependency>
@@ -107,7 +114,7 @@
                     <localCheckout>true</localCheckout>
                     <pushChanges>false</pushChanges>
                     <mavenExecutorId>forked-path</mavenExecutorId>
-                    <arguments>-Dgpg.passphrase=1q2w3e4r5t6y7u8i9o0p</arguments>
+                    <arguments>-Dgpg.passphrase=DC8CED72EDA264D22CD20C04BEC0E960F7429EF1</arguments>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -117,20 +124,6 @@
                     </dependency>
                 </dependencies>
             </plugin>
-
-
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.7</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <!-- The server "id" element from settings to use authentication from -->
-                    <serverId>ossrh</serverId>
-                </configuration>
-            </plugin>
-
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -155,6 +148,32 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
 
     </build>
@@ -180,11 +199,6 @@
         </developer>
     </developers>
 
-    <scm>
-        <connection>scm:git:git://github.com/Osama-O5/OSSRH-55931.git</connection>
-        <developerConnection>scm:git:git@github.com/Osama-O5/OSSRH-55931.git</developerConnection>
-        <url>https://github.com/Osama-O5/OSSRH-55931</url>
-        <tag>HEAD</tag>
-    </scm>
+
 
 </project>
