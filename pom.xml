@@ -4,14 +4,55 @@
 
     <groupId>com.github.Osama-O5</groupId>
     <artifactId>OSSRH-55931</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
+
+    <name>OBug</name>
+    <description>ALM Defects Counter</description>
+    <url>https://github.com/Osama-O5/OSSRH-55931</url>
+
+    <organization>
+        <url>https://github.com/Osama-O5</url>
+        <name>Osama-O5</name>
+    </organization>
+    <inceptionYear>2020</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>osama khaled</name>
+            <email>osama_o5@hotmail.com</email>
+            <organization>com.github.Osama-O5</organization>
+            <organizationUrl>https://github.com/Osama-O5/OSSRH-55931</organizationUrl>
+        </developer>
+    </developers>
 
     <scm>
         <connection>scm:git:git://github.com/Osama-O5/OSSRH-55931.git</connection>
         <developerConnection>scm:git:git@github.com/Osama-O5/OSSRH-55931.git</developerConnection>
         <url>https://github.com/Osama-O5/OSSRH-55931</url>
-        <tag>OSSRH-55931-1.2.1</tag>
+        <tag>OSSRH-55931-1.2.2</tag>
     </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2
+            </url>
+        </repository>
+    </distributionManagement>
+
+
+
     
     <dependencies>
 
@@ -165,26 +206,7 @@
 
     </build>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2
-            </url>
-        </repository>
-    </distributionManagement>
 
-    <developers>
-        <developer>
-            <name>osama khaled</name>
-            <email>osama_o5@hotmail.com</email>
-            <organization>com.github.Osama-O5</organization>
-            <organizationUrl>https://github.com/Osama-O5/OSSRH-55931</organizationUrl>
-        </developer>
-    </developers>
 
 
 
