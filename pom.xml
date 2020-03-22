@@ -3,8 +3,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.Osama-O5</groupId>
-    <artifactId>OSSRH-55931</artifactId>
-    <version>1.2.3-SNAPSHOT</version>
+    <artifactId>OBug</artifactId>
+    <version>1.2.3</version>
 
     <name>OBug</name>
     <description>ALM Defects Counter</description>
@@ -36,7 +36,7 @@
         <connection>scm:git:git://github.com/Osama-O5/OSSRH-55931.git</connection>
         <developerConnection>scm:git:git@github.com/Osama-O5/OSSRH-55931.git</developerConnection>
         <url>https://github.com/Osama-O5/OSSRH-55931</url>
-        <tag>OSSRH-55931</tag>
+        <tag>OBug-1.2.3</tag>
     </scm>
 
     <distributionManagement>
