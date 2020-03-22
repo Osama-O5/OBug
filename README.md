@@ -1,6 +1,6 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.com/Osama-O5/OBug/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.github.com/Osama-O5/OBug)
 # OBug
-Mobile visual testing framework
+Mobile Autonomous testing framework for ALM defects counter the effected modules . 
 using Java and appium
 
 # Maven dependency
