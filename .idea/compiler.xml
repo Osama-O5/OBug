@@ -7,11 +7,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="Autonomous Testing" />
+        <module name="OBug" />
         <module name="OSSRH-55931" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="Autonomous-Testing" target="1.8" />
+      <module name="OSSRH-55931" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
