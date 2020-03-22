@@ -1,1 +1,1 @@
-[![Maven Central](https://maven.badges.herokupp.com/maven-central/com.github.Osama-O5/OBug/badges.svg?style=plastic)](https://maven.badges,herokupp.com/maven-central/com.github.Osama-O5/OBug/badges.svg)OBug
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.com/Osama-O5/OBug/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.com/Osama-O5/OBug)
