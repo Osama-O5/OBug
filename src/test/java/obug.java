@@ -8,6 +8,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import java.io.*;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 abstract public class obug {
 
@@ -48,6 +49,7 @@ abstract public class obug {
     public static void URlQuery(String Domain_Name, String Project_Name, String Status, String Device_Type, String Priority, String Severity, String Detected_by, String Component_name, String Creation_Time) {
         driver.navigate().to("https://alm.vodafone.com/qcbin/rest/domains/" + Domain_Name + "/projects/" + Project_Name + "/defects?query={status[" + Status + "];user-21[" + Device_Type + "];priority[" + Priority + "];severity[" + Severity + "];detected-by[" + Detected_by + "];user-11[" + Component_name + "];creation-time[" + Creation_Time + "]}");
         list();
+
     }
 
     public static void countFrequencies(ArrayList<String> list) {
@@ -129,10 +131,10 @@ abstract public class obug {
 
             //write html string content to a file
             ExportReport(htmlStringBuilder.toString(), "Report.html");
+            openReport();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public static void ExportReport(String fileContent, String fileName) throws IOException {
@@ -155,4 +157,19 @@ abstract public class obug {
         writer.close();
     }
 
+    public static void openReport() throws IOException {
+
+        String command="";
+         boolean isWindows = System.getProperty("os.name")
+                .toLowerCase().startsWith("windows");
+         ProcessBuilder builder = new ProcessBuilder();
+        String projectPath = System.getProperty("user.dir");
+        String Reportname = "Report.html";
+        String tempFile = projectPath + File.separator + Reportname;
+         if (isWindows) {
+             Runtime.getRuntime().exec("cmd.exe /c start "+tempFile+"");
+         } else {
+             Runtime.getRuntime().exec("sh -c open "+tempFile+"");
+         }
+    }
 }
