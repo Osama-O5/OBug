@@ -4,11 +4,19 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.TestNG;
+import org.testng.xml.XmlSuite;
+import org.testng.xml.XmlTest;
 
 import java.io.*;
+
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 abstract public class obug {
 
@@ -20,19 +28,40 @@ abstract public class obug {
     public static Object Keys;
     public static Object Values;
     public static Object arrays;
+    public static String scripts;
+    public static List<String> scriptsNames;
+    public static List<String> modulesNames;
+    public static List<String> separateModule;
+    public static List<Object> scriptName;
+    public static List<String> names;
+    public static List<String> collect;
+    public static List<String> pack;
+    public static List<String> name;
+    public static Object module;
+    public static Object[] script;
+    public static boolean matchFound;
+    public static List<Boolean> matchStatus;
+    public static String patternStr;
+    public static String input;
+    public static String naming;
 
 
     public static void Caps(String Driver, String Driver_Path) {
         DesiredCapabilities caps = new DesiredCapabilities();
         String path = System.getProperty("user.dir");
-        System.setProperty(Driver, path +Driver_Path);
+        System.setProperty(Driver, path + Driver_Path);
+        /*WebDriverManager.chromedriver().clearPreferences();
+        WebDriverManager.chromedriver().setup();*/
         System.setProperty("https.protocols", "TLSv1.2");
         driver = new ChromeDriver(caps);
         driver.manage().window().maximize();
         driver.get("https://alm.vodafone.com/qcbin/rest/is-authenticated?login-form-required=y");
+
     }
 
-    public static void Login(String Username, String Password) throws InterruptedException, IOException {
+    public static void Login(String Username, String Password) throws Exception {
+        WebDriverWait wait = new WebDriverWait(driver, 30);
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("j_username")));
         WebElement User = driver.findElement(By.id("j_username"));
         WebElement Pass = driver.findElement(By.id("j_password"));
         WebElement Authenticate = driver.findElement(By.xpath("//*[contains(@type,'submit')] "));
@@ -46,10 +75,9 @@ abstract public class obug {
         }
     }
 
-    public static void URlQuery(String Domain_Name, String Project_Name, String Status, String Device_Type, String Priority, String Severity, String Detected_by, String Component_name, String Creation_Time) {
+    public static void URlQuery(String Domain_Name, String Project_Name, String Status, String Device_Type, String Priority, String Severity, String Detected_by, String Component_name, String Creation_Time) throws IOException, InterruptedException {
         driver.navigate().to("https://alm.vodafone.com/qcbin/rest/domains/" + Domain_Name + "/projects/" + Project_Name + "/defects?query={status[" + Status + "];user-21[" + Device_Type + "];priority[" + Priority + "];severity[" + Severity + "];detected-by[" + Detected_by + "];user-11[" + Component_name + "];creation-time[" + Creation_Time + "]}");
         list();
-
     }
 
     public static void countFrequencies(ArrayList<String> list) {
@@ -65,10 +93,9 @@ abstract public class obug {
                 .stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
-
     }
 
-    public static void list() {
+    public static void list() throws IOException, InterruptedException {
         List<WebElement> user11 = driver.findElements(By.xpath("//*[@Name='user-11']/Value"));
         ArrayList<String> list = new ArrayList<String>();
         for (WebElement Name : user11) {
@@ -80,8 +107,7 @@ abstract public class obug {
         driver.quit();
     }
 
-
-    public static void Report() throws IOException {
+    public static void Report() throws IOException, InterruptedException {
         try {
             StringBuilder htmlStringBuilder = new StringBuilder();
 
@@ -90,10 +116,13 @@ abstract public class obug {
             array = sortedMap.entrySet().toArray();
             StringBuilder paramCollection = new StringBuilder();
 
+            modulesNames = new ArrayList<>();
             for (int i = 0; i < array.length; i++) {
                 Keys = Key[i];
                 Values = Value[i];
                 arrays = array[i];
+
+                modulesNames.add((String) Keys);
 
                 String collect = "[ '" + Keys + "'  ,  " + Values + " ]";
                 paramCollection.append(collect).append("\n");
@@ -129,15 +158,90 @@ abstract public class obug {
                     "  </body>\n" +
                     "</html>");
 
-            //write html string content to a file
             ExportReport(htmlStringBuilder.toString(), "Report.html");
             openReport();
+            String projectPath = System.getProperty("user.dir");
+            boolean isWindows = System.getProperty("os.name")
+                    .toLowerCase().startsWith("windows");
+            if (isWindows) {
+                try {
+                    Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c del LocationsList.json");
+                    Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c timeout /T 10");
+                    Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c dir /b/s *.java >> LocationsList.json");
+                    Thread.sleep(5000);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Runtime.getRuntime().exec("sh -c " + projectPath + " /c del LocationsList.json");
+                Runtime.getRuntime().exec("sh -c " + projectPath + " /c dir /b/s *.java >> LocationsList.json");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void ExportReport(String fileContent, String fileName) throws IOException {
+    public static void AutomaticMatch() throws IOException, InterruptedException {
+        String JsonName = "LocationsList";
+        String projectPath = System.getProperty("user.dir");
+        try {
+            FileReader fr = new FileReader("" + projectPath + "/LocationsList.json");
+            if (fr.equals(false)) {
+                Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c del LocationsList.json");
+                Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c timeout /T 10");
+                Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c dir /b/s *.java >> LocationsList.json");
+                Thread.sleep(5000);
+            }
+            BufferedReader br = new BufferedReader(fr);
+            String currentLine;
+            scriptsNames = new ArrayList<>();
+            String getJavaLine = null;
+            while ((currentLine = br.readLine()) != null) {
+                for (int i = 0; i < currentLine.length(); i++) {
+                    getJavaLine = currentLine.substring(currentLine.lastIndexOf("\\") + 1);
+                    scripts = getJavaLine.replace(".java", "");
+                }
+                scriptsNames.add(scripts);
+                script = scriptsNames.toArray();
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        separateModule = new ArrayList<>();
+        Object[] modules = modulesNames.toArray();
+        matchStatus = new ArrayList<>();
+        names = new ArrayList<>();
+        scriptName = new ArrayList<>();
+        for (int y = 0; y < modules.length; y++) {
+            module = modules[y];
+            separateModule.add((String) module);
+            if (scripts.length() != 0) {
+                patternStr = scriptsNames.toString();
+                Pattern pattern = Pattern.compile(patternStr);
+                input = module.toString();
+                Matcher matcher = pattern.matcher(input);
+                matcher.reset(input);
+                matchFound = matcher.lookingAt();
+//                System.out.println(input + " Equal script name " + matchFound);
+            }
+
+            if (matchFound == true) {
+                matchStatus.add(matchFound);
+                names.add(input);
+            }
+//                names.add(sc);
+        }
+
+                    /*{
+                if (name2.contains("EIOPassed")) {
+//                    collect.add((String) s);
+//                    naming = String.valueOf(true);
+//                    System.out.println("Regression Pack Contains :" + collect + "");*/
+    }
+
+
+    public static void ExportReport(String fileContent, String fileName) throws IOException, InterruptedException {
         String projectPath = System.getProperty("user.dir");
         String tempFile = projectPath + File.separator + fileName;
         File file = new File(tempFile);
@@ -157,19 +261,71 @@ abstract public class obug {
         writer.close();
     }
 
-    public static void openReport() throws IOException {
+    public static void openReport() throws IOException, InterruptedException {
 
-        String command="";
-         boolean isWindows = System.getProperty("os.name")
+        String command = "";
+        boolean isWindows = System.getProperty("os.name")
                 .toLowerCase().startsWith("windows");
-         ProcessBuilder builder = new ProcessBuilder();
+        ProcessBuilder builder = new ProcessBuilder();
         String projectPath = System.getProperty("user.dir");
         String Reportname = "Report.html";
         String tempFile = projectPath + File.separator + Reportname;
-         if (isWindows) {
-             Runtime.getRuntime().exec("cmd.exe /c start "+tempFile+"");
-         } else {
-             Runtime.getRuntime().exec("sh -c open "+tempFile+"");
-         }
+        if (isWindows) {
+            Runtime.getRuntime().exec("cmd.exe /c start " + tempFile + "");
+        } else {
+            Runtime.getRuntime().exec("sh -c open " + tempFile + "");
+        }
     }
+
+    public void fullRegressionPack() throws Exception {
+        AutomaticMatch();
+
+//        System.out.println("Regression Pack Contains :" + names + "");
+
+        List<XmlSuite> suites = new ArrayList<XmlSuite>();
+        XmlSuite suite = new XmlSuite();
+        suite.setName("Full Regression Pack");
+        XmlTest test = new XmlTest();
+        TestNG testNG = new TestNG();
+        test.setName("Full Regression Pack");
+        suites.add(suite);
+        testNG.setXmlSuites(suites);
+
+        pack = new ArrayList<>();
+        collect = new ArrayList<>();
+        for (Object s : names) {
+            scriptsNames.forEach(name2 -> {
+                if (name2.contains(s.toString())) {
+//                    collect.add(s.toString());
+                    naming = String.valueOf(true);
+                    pack.add(name2);
+                }
+            });
+        }
+
+        name = new ArrayList<>();
+        name.addAll(pack);
+        pack.clear();
+        pack.addAll(name);
+
+//        while (matchStatus.containsAll(Collections.singleton(true)) ) {
+                for (String ClassName : pack) {
+                    StringBuilder s = new StringBuilder();
+                    s.append(ClassName).append(".class");
+                    System.out.println(s);
+//                    testNG.setTestClasses(new Class[] {s});
+
+
+//                    testNG.run();
+                }
+//            }
+        System.out.println("Regression Pack Contains :" + pack + "");
+
+    }
+
+
+
+
+        public static void criticalRegressionPack () {
+        }
 }

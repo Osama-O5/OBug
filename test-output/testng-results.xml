@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" ignored="0" total="0" passed="0">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Full Regression Pack" duration-ms="0" started-at="2020-05-29T19:45:30Z" finished-at="2020-05-29T19:45:30Z">
+    <groups>
+    </groups>
+  </suite> <!-- Full Regression Pack -->
+</testng-results>

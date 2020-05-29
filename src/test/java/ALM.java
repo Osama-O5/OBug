@@ -8,10 +8,11 @@ import java.io.*;
 public class ALM extends obug {
 
     @Test
-    public static void RegressionPack() throws InterruptedException, IOException {
-        obug.Caps("webdriver.chrome.driver", "/drivers/chromedriver");
-        obug.Login("EG_aalaa2", "Ahly@1993");
-        URlQuery("Enterprise_prod_and_serv", "mCare_core", "", "", "", "", "", "", ">='2020-02-12'");
+    public static void RegressionPack() throws Exception {
+        obug.Caps("webdriver.chrome.driver", "\\drivers\\chromedriver.exe");
+        obug.Login("EG_aalaa2", "ahly@myVFc0re");
+        URlQuery("Enterprise_prod_and_serv", "mCare_core", "", "", "", "'Major'", "", "", ">='2020-04-12'");
         obug.Report();
+        fullRegressionPack();
     }
 }

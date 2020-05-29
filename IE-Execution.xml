@@ -2,11 +2,12 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
     <suite name="Autonomus Testing">
     <parameter name="platform" value="Browser"></parameter>
-    <test name="Regression Pack">
+    <test name="Test">
         <classes>
             <class name="ALM"></class>
         </classes>
     </test>
+
     </suite>
 
 

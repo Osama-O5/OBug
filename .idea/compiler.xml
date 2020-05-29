@@ -11,8 +11,7 @@
         <module name="OSSRH-55931" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="Autonomous-Testing" target="1.8" />
+    <bytecodeTargetLevel target="9">
       <module name="OSSRH-55931" target="1.8" />
     </bytecodeTargetLevel>
   </component>
