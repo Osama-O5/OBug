@@ -1,4 +1,5 @@
 
+import org.jsoup.select.Evaluator;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -6,13 +7,12 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.TestListenerAdapter;
 import org.testng.TestNG;
 import org.testng.xml.XmlSuite;
 import org.testng.xml.XmlTest;
 
 import java.io.*;
-
-import java.lang.reflect.Type;
 import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -30,6 +30,8 @@ abstract public class obug {
     public static Object arrays;
     public static String scripts;
     public static List<String> scriptsNames;
+    public static List<String> Classes;
+    public static List<String> Classess;
     public static List<String> modulesNames;
     public static List<String> separateModule;
     public static List<Object> scriptName;
@@ -230,14 +232,7 @@ abstract public class obug {
                 matchStatus.add(matchFound);
                 names.add(input);
             }
-//                names.add(sc);
         }
-
-                    /*{
-                if (name2.contains("EIOPassed")) {
-//                    collect.add((String) s);
-//                    naming = String.valueOf(true);
-//                    System.out.println("Regression Pack Contains :" + collect + "");*/
     }
 
 
@@ -277,11 +272,9 @@ abstract public class obug {
         }
     }
 
-    public void fullRegressionPack() throws Exception {
+
+    public static void fullRegressionPack() throws Exception {
         AutomaticMatch();
-
-//        System.out.println("Regression Pack Contains :" + names + "");
-
         List<XmlSuite> suites = new ArrayList<XmlSuite>();
         XmlSuite suite = new XmlSuite();
         suite.setName("Full Regression Pack");
@@ -296,7 +289,6 @@ abstract public class obug {
         for (Object s : names) {
             scriptsNames.forEach(name2 -> {
                 if (name2.contains(s.toString())) {
-//                    collect.add(s.toString());
                     naming = String.valueOf(true);
                     pack.add(name2);
                 }
@@ -308,24 +300,47 @@ abstract public class obug {
         pack.clear();
         pack.addAll(name);
 
-//        while (matchStatus.containsAll(Collections.singleton(true)) ) {
-                for (String ClassName : pack) {
-                    StringBuilder s = new StringBuilder();
-                    s.append(ClassName).append(".class");
-                    System.out.println(s);
-//                    testNG.setTestClasses(new Class[] {s});
+        for (String ClassName : pack) {
+            StringBuilder builder = new StringBuilder();
+            builder.append(ClassName).append(".java");
+            String string = builder.toString();
+            TestListenerAdapter tla = new TestListenerAdapter();
+            try {
+                String projectPath = System.getProperty("user.dir");
+                FileReader fr = new FileReader("" + projectPath + "/LocationsList.json");
+                BufferedReader br = new BufferedReader(fr);
+                String currentLine;
+                scriptsNames = new ArrayList<>();
+                Classes = new ArrayList<>();
+                String getJavaLine = null;
+                while ((currentLine = br.readLine()) != null) {
+                    for (int i = 0; i < currentLine.length(); i++) {
+                        getJavaLine = currentLine.substring(currentLine.lastIndexOf("\\") + 1);
+                        scripts = getJavaLine.replace(".java", "");
+                    }
 
-
-//                    testNG.run();
+                    if (getJavaLine.equals(string)) {
+                        Classes.add(getJavaLine);
+                    }
                 }
-//            }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        for (String modle : pack) {
+            System.out.println(modle);
+            Class c = Class.forName(modle);
+            testNG.setTestClasses(new Class[]{c});
+        }
         System.out.println("Regression Pack Contains :" + pack + "");
 
+        testNG.run();
     }
 
 
-
-
-        public static void criticalRegressionPack () {
-        }
+    public static void criticalRegressionPack() {
+    }
 }
