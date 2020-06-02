@@ -1,14 +1,15 @@
 
-import org.jsoup.select.Evaluator;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.TestListenerAdapter;
 import org.testng.TestNG;
+import org.testng.xml.XmlClass;
 import org.testng.xml.XmlSuite;
 import org.testng.xml.XmlTest;
 
@@ -31,7 +32,8 @@ abstract public class obug {
     public static String scripts;
     public static List<String> scriptsNames;
     public static List<String> Classes;
-    public static List<String> Classess;
+    public static List<Class> Classess;
+    public static List<Class> Clas;
     public static List<String> modulesNames;
     public static List<String> separateModule;
     public static List<Object> scriptName;
@@ -46,6 +48,10 @@ abstract public class obug {
     public static String patternStr;
     public static String input;
     public static String naming;
+    public static Class classes;
+    public static Class moreThanClass;
+    public static Iterator<Class> itr;
+    public static ArrayList<Class> listWithoutDuplicatesinClass;
 
 
     public static void Caps(String Driver, String Driver_Path) {
@@ -168,9 +174,11 @@ abstract public class obug {
             if (isWindows) {
                 try {
                     Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c del LocationsList.json");
-                    Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c timeout /T 10");
+                    Thread.sleep(3000);
+                    Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c timeout /T 30");
                     Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c dir /b/s *.java >> LocationsList.json");
-                    Thread.sleep(5000);
+                    Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c timeout /T 70");
+                    Thread.sleep(1000);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -190,9 +198,11 @@ abstract public class obug {
             FileReader fr = new FileReader("" + projectPath + "/LocationsList.json");
             if (fr.equals(false)) {
                 Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c del LocationsList.json");
-                Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c timeout /T 10");
+                Thread.sleep(3000);
+                Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c timeout /T 30");
                 Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c dir /b/s *.java >> LocationsList.json");
-                Thread.sleep(5000);
+                Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c timeout /T 70");
+                Thread.sleep(1000);
             }
             BufferedReader br = new BufferedReader(fr);
             String currentLine;
@@ -225,7 +235,6 @@ abstract public class obug {
                 Matcher matcher = pattern.matcher(input);
                 matcher.reset(input);
                 matchFound = matcher.lookingAt();
-//                System.out.println(input + " Equal script name " + matchFound);
             }
 
             if (matchFound == true) {
@@ -275,15 +284,8 @@ abstract public class obug {
 
     public static void fullRegressionPack() throws Exception {
         AutomaticMatch();
-        List<XmlSuite> suites = new ArrayList<XmlSuite>();
-        XmlSuite suite = new XmlSuite();
-        suite.setName("Full Regression Pack");
-        XmlTest test = new XmlTest();
-        TestNG testNG = new TestNG();
-        test.setName("Full Regression Pack");
-        suites.add(suite);
-        testNG.setXmlSuites(suites);
-
+        StringBuilder incrementalClass = new StringBuilder();
+        StringBuilder incremental = new StringBuilder();
         pack = new ArrayList<>();
         collect = new ArrayList<>();
         for (Object s : names) {
@@ -304,7 +306,6 @@ abstract public class obug {
             StringBuilder builder = new StringBuilder();
             builder.append(ClassName).append(".java");
             String string = builder.toString();
-            TestListenerAdapter tla = new TestListenerAdapter();
             try {
                 String projectPath = System.getProperty("user.dir");
                 FileReader fr = new FileReader("" + projectPath + "/LocationsList.json");
@@ -327,19 +328,56 @@ abstract public class obug {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
 
-        for (String modle : pack) {
-            System.out.println(modle);
-            Class c = Class.forName(modle);
-            testNG.setTestClasses(new Class[]{c});
-        }
-        System.out.println("Regression Pack Contains :" + pack + "");
+        LinkedHashSet<String> hashSet = new LinkedHashSet<>(pack);
+        ArrayList<String> listWithoutDuplicates = new ArrayList<>(hashSet);
+        System.out.println("Regression Pack Contains :" + listWithoutDuplicates + "");
+        for (String modle : listWithoutDuplicates) {
+            int i = 0;
+            XmlSuite suite = new XmlSuite();
 
-        testNG.run();
+            // Creating a new Test
+            XmlTest test = new XmlTest(suite);
+
+            // Set Test name
+            test.setName(modle);
+
+            // New list for the parameters
+            Map<String, String> testParams = new HashMap<String, String>();
+
+            // Add parameter to the list
+            testParams.put("host", String.valueOf(i));
+
+            // Add parameters to test
+            test.setParameters(testParams);
+
+            // New list for the classes
+            List<XmlClass> classes = new ArrayList<XmlClass>();
+
+            String one = "" + modle + "";
+            Class firstonly = Class.forName(one);
+            // Putting the classes to the list
+            classes.add(new XmlClass(firstonly));
+
+            // Add classes to test
+            test.setClasses(classes);
+            i++;
+
+            // New list for the Suites
+            List<XmlSuite> suites = new ArrayList<XmlSuite>();
+
+            // Add suite to the list
+            suites.add(suite);
+
+            // Creating the xml
+            TestListenerAdapter tla = new TestListenerAdapter();
+            TestNG testNG = new TestNG();
+            suite.setName("Full Regression Pack" + " " + "" + "->" + " " + "" + modle + " " + "Script");
+            testNG.setXmlSuites(suites);
+            testNG.run();
+        }
     }
-
 
     public static void criticalRegressionPack() {
     }
