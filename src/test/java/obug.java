@@ -1,14 +1,27 @@
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.MediaEntityBuilder;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.markuputils.ExtentColor;
+import com.aventstack.extentreports.markuputils.Markup;
+import com.aventstack.extentreports.markuputils.MarkupHelper;
+import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
+import com.aventstack.extentreports.reporter.configuration.ChartLocation;
+import com.aventstack.extentreports.reporter.configuration.Theme;
+import com.sun.net.httpserver.Authenticator;
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.ITestNGListener;
+import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
 import org.testng.TestNG;
+import org.testng.annotations.*;
 import org.testng.xml.XmlClass;
 import org.testng.xml.XmlSuite;
 import org.testng.xml.XmlTest;
@@ -18,6 +31,8 @@ import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.testng.ITestResult.*;
 
 abstract public class obug {
 
@@ -48,9 +63,10 @@ abstract public class obug {
     public static String patternStr;
     public static String input;
     public static String naming;
-    public static Class classes;
-    public static Class moreThanClass;
-    public static Iterator<Class> itr;
+    public static ExtentTest tests;
+    public static ExtentReports extent;
+    public static ExtentHtmlReporter reporter;
+    public static ITestResult testResult;
     public static ArrayList<Class> listWithoutDuplicatesinClass;
 
 
@@ -115,7 +131,7 @@ abstract public class obug {
         driver.quit();
     }
 
-    public static void Report() throws IOException, InterruptedException {
+    public static void ModulesReport() throws IOException, InterruptedException {
         try {
             StringBuilder htmlStringBuilder = new StringBuilder();
 
@@ -166,8 +182,8 @@ abstract public class obug {
                     "  </body>\n" +
                     "</html>");
 
-            ExportReport(htmlStringBuilder.toString(), "Report.html");
-            openReport();
+            ExportReport(htmlStringBuilder.toString(), "Reports/Modules_Report.html");
+            openModule_Report();
             String projectPath = System.getProperty("user.dir");
             boolean isWindows = System.getProperty("os.name")
                     .toLowerCase().startsWith("windows");
@@ -251,7 +267,7 @@ abstract public class obug {
         File file = new File(tempFile);
         // if file does exists, then delete and create a new file
         if (file.exists()) {
-            try (FileWriter filee = new FileWriter("Report.html")) {
+            try (FileWriter filee = new FileWriter("Reports/Modules_Report.html")) {
                 filee.write(fileContent);
                 filee.flush();
             } catch (IOException e) {
@@ -265,14 +281,14 @@ abstract public class obug {
         writer.close();
     }
 
-    public static void openReport() throws IOException, InterruptedException {
+    public static void openModule_Report() throws IOException, InterruptedException {
 
         String command = "";
         boolean isWindows = System.getProperty("os.name")
                 .toLowerCase().startsWith("windows");
         ProcessBuilder builder = new ProcessBuilder();
         String projectPath = System.getProperty("user.dir");
-        String Reportname = "Report.html";
+        String Reportname = "Reports/Modules_Report.html";
         String tempFile = projectPath + File.separator + Reportname;
         if (isWindows) {
             Runtime.getRuntime().exec("cmd.exe /c start " + tempFile + "");
@@ -281,11 +297,11 @@ abstract public class obug {
         }
     }
 
-
     public static void fullRegressionPack() throws Exception {
         AutomaticMatch();
-        StringBuilder incrementalClass = new StringBuilder();
-        StringBuilder incremental = new StringBuilder();
+        String projectPath = System.getProperty("user.dir");
+        String w = "Reports/ScreenShots";
+        String tempFile = projectPath + File.separator + w;
         pack = new ArrayList<>();
         collect = new ArrayList<>();
         for (Object s : names) {
@@ -307,7 +323,6 @@ abstract public class obug {
             builder.append(ClassName).append(".java");
             String string = builder.toString();
             try {
-                String projectPath = System.getProperty("user.dir");
                 FileReader fr = new FileReader("" + projectPath + "/LocationsList.json");
                 BufferedReader br = new BufferedReader(fr);
                 String currentLine;
@@ -330,6 +345,8 @@ abstract public class obug {
             }
         }
 
+        TestListenerAdapter testListenerAdapter = new TestListenerAdapter();
+        TestNG testNG = new TestNG();
         LinkedHashSet<String> hashSet = new LinkedHashSet<>(pack);
         ArrayList<String> listWithoutDuplicates = new ArrayList<>(hashSet);
         System.out.println("Regression Pack Contains :" + listWithoutDuplicates + "");
@@ -360,8 +377,26 @@ abstract public class obug {
             // Putting the classes to the list
             classes.add(new XmlClass(firstonly));
 
+
             // Add classes to test
             test.setClasses(classes);
+
+            // call createTest method and pass the name of TestCase- Based on your requirement
+            tests = extent.createTest(modle);
+
+            ITestResult result = null ;
+            if (result.getStatus()==ITestResult.FAILURE) {
+                tests.log(Status.PASS, MarkupHelper.createLabel(result.getName() + "Test Case Failed", ExtentColor.RED));
+                tests.fail(result.getThrowable());
+                String temp = getScreenshot(driver);
+                tests.fail(result.getThrowable().getMessage(), MediaEntityBuilder.createScreenCaptureFromPath(temp).build());
+
+            } else if (result.getStatus() == ITestResult.SUCCESS) {
+                tests.log(Status.PASS , MarkupHelper.createLabel(result.getName() + "Test Case Passed", ExtentColor.GREEN));
+            } else if (result.getStatus()== SKIP){
+                tests.log(Status.SKIP,MarkupHelper.createLabel(result.getName() + "Test Case Skipped", ExtentColor.YELLOW));
+            }
+
             i++;
 
             // New list for the Suites
@@ -370,15 +405,113 @@ abstract public class obug {
             // Add suite to the list
             suites.add(suite);
 
+
             // Creating the xml
-            TestListenerAdapter tla = new TestListenerAdapter();
-            TestNG testNG = new TestNG();
             suite.setName("Full Regression Pack" + " " + "" + "->" + " " + "" + modle + " " + "Script");
             testNG.setXmlSuites(suites);
             testNG.run();
+
+           /* if (tests.getStatus().toString().equals("fail")) {
+                testResult.setStatus(ITestResult.FAILURE);
+            } else if (tests.getStatus().toString().equals("pass")) {
+                testResult.setStatus(SUCCESS);
+            } else if(tests.getStatus().toString().equals("skip")){
+                testResult.setStatus(ITestResult.SKIP);
+            }*/
+
+            /*if (tests.getStatus().equals(Status.FAIL)) {
+                testListenerAdapter.onTestFailure(result);
+            } else if (tests.getStatus().equals(Status.PASS)) {
+                testListenerAdapter.onTestSuccess(result);
+            } else if(tests.getStatus().equals(Status.SKIP)){
+                testListenerAdapter.onTestSkipped(result);
+            }*/
+
+
         }
     }
 
     public static void criticalRegressionPack() {
+    }
+
+
+    @BeforeSuite
+    public static void setup() {
+        String projectPath = System.getProperty("user.dir");
+        // Create Object of ExtentHtmlReporter and provide the path where you want to generate the report
+        // I used (.) in path where represent the current working directory
+        reporter = new ExtentHtmlReporter("" + projectPath + "/Reports/Regression_Report.html");
+
+        // Create object of ExtentReports class- This is main class which will create report
+        extent = new ExtentReports();
+
+        // attach the reporter which we created in Step 1
+        extent.attachReporter(reporter);
+
+        reporter.config().setChartVisibilityOnOpen(true);
+        reporter.config().setReportName("Regression Pack Report");
+        reporter.config().setTestViewChartLocation(ChartLocation.TOP);
+        reporter.config().setTheme(Theme.DARK);
+        reporter.config().setTimeStampFormat("EEEE, MMMM dd, yyyy, hh:mm a '('zzz')'");
+
+    }
+
+    @AfterMethod
+    public static void setResult(ITestResult result) throws IOException, InterruptedException {
+        if (result.getStatus()==ITestResult.FAILURE) {
+            tests.log(Status.PASS, MarkupHelper.createLabel(result.getName() + "Test Case Failed", ExtentColor.RED));
+            tests.fail(result.getThrowable());
+            String temp = getScreenshot(driver);
+            tests.fail(result.getThrowable().getMessage(), MediaEntityBuilder.createScreenCaptureFromPath(temp).build());
+
+        } else if (result.getStatus() == ITestResult.SUCCESS) {
+            tests.log(Status.PASS , MarkupHelper.createLabel(result.getName() + "Test Case Passed", ExtentColor.GREEN));
+        } else if (result.getStatus()== SKIP){
+            tests.log(Status.SKIP,MarkupHelper.createLabel(result.getName() + "Test Case Skipped", ExtentColor.YELLOW));
+        }
+
+        extent.flush();
+        openRegression_Report();
+    }
+
+   /* @AfterMethod
+    public void tearDown() throws IOException, InterruptedException {
+        // This will add another test in report
+
+    }
+*/
+    public static String getScreenshot(WebDriver driver) {
+        TakesScreenshot ts = (TakesScreenshot) driver;
+
+        File src = ts.getScreenshotAs(OutputType.FILE);
+
+        String path = System.getProperty("user.dir") + "/Screenshots/" + System.currentTimeMillis() + ".png";
+
+        File destination = new File(path);
+
+        try {
+            FileUtils.copyFile(src, destination);
+        } catch (IOException e) {
+            System.out.println("Capture Failed " + e.getMessage());
+        }
+
+        return path;
+    }
+
+
+    public static void openRegression_Report() throws IOException, InterruptedException {
+
+        String command = "";
+        boolean isWindows = System.getProperty("os.name")
+                .toLowerCase().startsWith("windows");
+        ProcessBuilder builder = new ProcessBuilder();
+        String projectPath = System.getProperty("user.dir");
+        String Reportname = "Reports/Regression_Report.html";
+        String tempFile = projectPath + File.separator + Reportname;
+        if (isWindows) {
+            Runtime.getRuntime().exec("cmd.exe /c start " + tempFile + "");
+        } else {
+            Runtime.getRuntime().exec("sh -c open " + tempFile + "");
+        }
     }
 }
