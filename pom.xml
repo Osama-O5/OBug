@@ -4,7 +4,7 @@
 
     <groupId>com.github.Osama-O5</groupId>
     <artifactId>OBug</artifactId>
-    <version>1.2.4-SNAPSHOT</version>
+    <version>1.2.5</version>
 
     <name>OBug</name>
     <description>ALM Defects Counter</description>
@@ -36,7 +36,7 @@
         <connection>scm:git:git://github.com/Osama-O5/OSSRH-55931.git</connection>
         <developerConnection>scm:git:git@github.com/Osama-O5/OSSRH-55931.git</developerConnection>
         <url>https://github.com/Osama-O5/OSSRH-55931</url>
-        <tag>OSSRH-55931</tag>
+        <tag>1.2.5</tag>
     </scm>
 
     <distributionManagement>
@@ -52,10 +52,7 @@
     </distributionManagement>
 
 
-
-    
     <dependencies>
-
     <dependency>
         <groupId>io.appium</groupId>
         <artifactId>java-client</artifactId>
@@ -66,8 +63,6 @@
             <artifactId>json-simple</artifactId>
             <version>1.1.1</version>
         </dependency>
-
-
 
         <dependency>
             <groupId>org.testng</groupId>
@@ -143,7 +138,7 @@
                     <localCheckout>true</localCheckout>
                     <pushChanges>false</pushChanges>
                     <mavenExecutorId>forked-path</mavenExecutorId>
-                    <arguments>-Dgpg.passphrase=11F69E58E4FE887AC6603EBE698169491873CC9A</arguments>
+                    <arguments>-Dgpg.passphrase=B73CFF3C96382BDA07DD0377C5F67CD78D124C44</arguments>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -214,12 +209,8 @@
                 </checkModificationExcludes>
             </configuration>
             </plugin>
-
         </plugins>
-
     </build>
-
-
 
 
 
