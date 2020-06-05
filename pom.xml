@@ -4,7 +4,7 @@
 
     <groupId>com.github.Osama-O5</groupId>
     <artifactId>OBug</artifactId>
-    <version>1.2.7-SNAPSHOT</version>
+    <version>1.2.7</version>
 
     <name>OBug</name>
     <description>ALM Defects Counter</description>
@@ -36,8 +36,9 @@
         <connection>scm:git:git://github.com/Osama-O5/OSSRH-55931.git</connection>
         <developerConnection>scm:git:git@github.com/Osama-O5/OSSRH-55931.git</developerConnection>
         <url>https://github.com/Osama-O5/OSSRH-55931</url>
-        <tag>OSSRH-55931</tag>
+        <tag>1.2.6</tag>
     </scm>
+
 
     <distributionManagement>
         <snapshotRepository>
@@ -138,7 +139,7 @@
                     <localCheckout>true</localCheckout>
                     <pushChanges>false</pushChanges>
                     <mavenExecutorId>forked-path</mavenExecutorId>
-                    <arguments>-Dgpg.passphrase=B73CFF3C96382BDA07DD0377C5F67CD78D124C44</arguments>
+                    <arguments>-Dgpg.passphrase=50C5BF7218FDC5C913F8BA16BFF95CAFD3C871A5</arguments>
                 </configuration>
                 <dependencies>
                     <dependency>
