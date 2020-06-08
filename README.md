@@ -9,7 +9,7 @@ using Java and appium
 <dependency>
   <groupId>com.github.Osama-O5</groupId>
   <artifactId>OBug</artifactId>
-  <version>1.2.3</version>
+  <version>1.2.4</version>
 </dependency>
     
 ```
