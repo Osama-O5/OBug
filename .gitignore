@@ -1,4 +1,3 @@
-Autonomous Testing.iml
 IE-Execution.xml
 pom.xml.versionsBackup
 Target/
@@ -9,3 +8,4 @@ OSSRH-55931.iml
 Reports/
 test-output/
 .DS_Store
+Autonomous Testing.iml
