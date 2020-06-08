@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 
 import static org.testng.ITestResult.*;
 
-abstract public class obug {
+public class obug {
 
     public static WebDriver driver;
     static LinkedHashMap<String, Integer> sortedMap;
@@ -102,9 +102,10 @@ abstract public class obug {
     public static void URlQuery(String Domain_Name, String Project_Name, String Status, String Device_Type, String Priority, String Severity, String Detected_by, String Component_name, String Creation_Time) throws IOException, InterruptedException {
         driver.navigate().to("https://alm.vodafone.com/qcbin/rest/domains/" + Domain_Name + "/projects/" + Project_Name + "/defects?query={status[" + Status + "];user-21[" + Device_Type + "];priority[" + Priority + "];severity[" + Severity + "];detected-by[" + Detected_by + "];user-11[" + Component_name + "];creation-time[" + Creation_Time + "]}");
         list();
+        ModulesReport();
     }
 
-    public static void countFrequencies(ArrayList<String> list) {
+    private static void countFrequencies(ArrayList<String> list) {
 
         Map<String, Integer> Counter = new HashMap<String, Integer>();
 
@@ -119,7 +120,7 @@ abstract public class obug {
                 .forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
     }
 
-    public static void list() throws IOException, InterruptedException {
+    private static void list() throws IOException, InterruptedException {
         List<WebElement> user11 = driver.findElements(By.xpath("//*[@Name='user-11']/Value"));
         ArrayList<String> list = new ArrayList<String>();
         for (WebElement Name : user11) {
@@ -131,7 +132,7 @@ abstract public class obug {
         driver.quit();
     }
 
-    public static void ModulesReport() throws IOException, InterruptedException {
+    private static void ModulesReport() throws IOException, InterruptedException {
         try {
             StringBuilder htmlStringBuilder = new StringBuilder();
 
@@ -207,7 +208,7 @@ abstract public class obug {
         }
     }
 
-    public static void AutomaticMatch() throws IOException, InterruptedException {
+    private static void AutomaticMatch() throws IOException, InterruptedException {
         String JsonName = "LocationsList";
         String projectPath = System.getProperty("user.dir");
         try {
@@ -261,7 +262,7 @@ abstract public class obug {
     }
 
 
-    public static void ExportReport(String fileContent, String fileName) throws IOException, InterruptedException {
+    private static void ExportReport(String fileContent, String fileName) throws IOException, InterruptedException {
         String projectPath = System.getProperty("user.dir");
         String tempFile = projectPath + File.separator + fileName;
         File file = new File(tempFile);
@@ -281,7 +282,7 @@ abstract public class obug {
         writer.close();
     }
 
-    public static void openModule_Report() throws IOException, InterruptedException {
+    private static void openModule_Report() throws IOException, InterruptedException {
 
         String command = "";
         boolean isWindows = System.getProperty("os.name")
@@ -436,7 +437,7 @@ abstract public class obug {
 
 
     @BeforeSuite
-    public static void setup() {
+    private static void setup() {
         String projectPath = System.getProperty("user.dir");
         // Create Object of ExtentHtmlReporter and provide the path where you want to generate the report
         // I used (.) in path where represent the current working directory
@@ -457,7 +458,7 @@ abstract public class obug {
     }
 
     @AfterMethod
-    public static void setResult(ITestResult result) throws IOException, InterruptedException {
+    private static void setResult(ITestResult result) throws IOException, InterruptedException {
         if (result.getStatus()==ITestResult.FAILURE) {
             tests.log(Status.PASS, MarkupHelper.createLabel(result.getName() + "Test Case Failed", ExtentColor.RED));
             tests.fail(result.getThrowable());
@@ -480,7 +481,7 @@ abstract public class obug {
 
     }
 */
-    public static String getScreenshot(WebDriver driver) {
+    private static String getScreenshot(WebDriver driver) {
         TakesScreenshot ts = (TakesScreenshot) driver;
 
         File src = ts.getScreenshotAs(OutputType.FILE);
@@ -499,7 +500,7 @@ abstract public class obug {
     }
 
 
-    public static void openRegression_Report() throws IOException, InterruptedException {
+    private static void openRegression_Report() throws IOException, InterruptedException {
 
         String command = "";
         boolean isWindows = System.getProperty("os.name")
