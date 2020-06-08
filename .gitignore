@@ -9,5 +9,5 @@ Reports/
 test-output/
 .DS_Store
 Autonomous Testing.iml
-Idea/
+.idea/
 .DS_Store
