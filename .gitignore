@@ -1,10 +1,11 @@
 Autonomous Testing.iml
 IE-Execution.xml
 pom.xml.versionsBackup
-Target
-Drivers
+Target/
+drivers/
 Debug.log
 LocationsList.json
 OSSRH-55931.iml
-Reportstest-output
+Reports/
+test-output/
 .DS_Store
