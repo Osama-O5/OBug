@@ -1,23 +1,22 @@
+package common;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.markuputils.ExtentColor;
-import com.aventstack.extentreports.markuputils.Markup;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import com.aventstack.extentreports.reporter.configuration.ChartLocation;
 import com.aventstack.extentreports.reporter.configuration.Theme;
-import com.sun.net.httpserver.Authenticator;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.remote.MobileCapabilityType;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.ITestNGListener;
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
 import org.testng.TestNG;
@@ -27,12 +26,14 @@ import org.testng.xml.XmlSuite;
 import org.testng.xml.XmlTest;
 
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.testng.ITestResult.*;
+
 
 public class obug {
 
@@ -69,12 +70,13 @@ public class obug {
     public static ITestResult testResult;
     public static ArrayList<Class> listWithoutDuplicatesinClass;
 
+    String projectPath = System.getProperty("user.dir");
 
     public static void Caps(String Driver, String Driver_Path) {
         DesiredCapabilities caps = new DesiredCapabilities();
         String path = System.getProperty("user.dir");
         System.setProperty(Driver, path + Driver_Path);
-        /*WebDriverManager.chromedriver().clearPreferences();
+       /* WebDriverManager.chromedriver().clearPreferences();
         WebDriverManager.chromedriver().setup();*/
         System.setProperty("https.protocols", "TLSv1.2");
         driver = new ChromeDriver(caps);
@@ -95,7 +97,6 @@ public class obug {
             Pass.sendKeys(Password);
             Authenticate.click();
         } else {
-            ALM.RegressionPack();
         }
     }
 
@@ -133,7 +134,12 @@ public class obug {
     }
 
     private static void ModulesReport() throws IOException, InterruptedException {
+        String projectPath = System.getProperty("user.dir");
         try {
+            Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c mkdir Reports");
+            Thread.sleep(5000);
+            Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c timeout /T 100");
+
             StringBuilder htmlStringBuilder = new StringBuilder();
 
             Key = sortedMap.keySet().toArray();
@@ -185,17 +191,16 @@ public class obug {
 
             ExportReport(htmlStringBuilder.toString(), "Reports/Modules_Report.html");
             openModule_Report();
-            String projectPath = System.getProperty("user.dir");
             boolean isWindows = System.getProperty("os.name")
                     .toLowerCase().startsWith("windows");
             if (isWindows) {
                 try {
                     Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c del LocationsList.json");
-                    Thread.sleep(3000);
+                    Thread.sleep(30000);
                     Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c timeout /T 30");
                     Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c dir /b/s *.java >> LocationsList.json");
                     Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c timeout /T 70");
-                    Thread.sleep(1000);
+                    Thread.sleep(5000);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -215,11 +220,11 @@ public class obug {
             FileReader fr = new FileReader("" + projectPath + "/LocationsList.json");
             if (fr.equals(false)) {
                 Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c del LocationsList.json");
-                Thread.sleep(3000);
+                Thread.sleep(30000);
                 Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c timeout /T 30");
                 Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c dir /b/s *.java >> LocationsList.json");
                 Runtime.getRuntime().exec("cmd.exe " + projectPath + " /c timeout /T 70");
-                Thread.sleep(1000);
+                Thread.sleep(5000);
             }
             BufferedReader br = new BufferedReader(fr);
             String currentLine;
@@ -298,7 +303,7 @@ public class obug {
         }
     }
 
-    public static void fullRegressionPack() throws Exception {
+    public static void fullRegressionPack(String PLATFORM_VERSION , String PLATFORM_NAME , String AUTOMATION_NAME , String DEVICE_NAME , String appActivity , String appPackage , String host , String NO_RESET ) throws Exception {
         AutomaticMatch();
         String projectPath = System.getProperty("user.dir");
         String w = "Reports/ScreenShots";
@@ -351,6 +356,8 @@ public class obug {
         LinkedHashSet<String> hashSet = new LinkedHashSet<>(pack);
         ArrayList<String> listWithoutDuplicates = new ArrayList<>(hashSet);
         System.out.println("Regression Pack Contains :" + listWithoutDuplicates + "");
+        System.out.println("Please Wait ...");
+        System.out.println("We Are Preparing Your Regression Pack .........");
         for (String modle : listWithoutDuplicates) {
             int i = 0;
             XmlSuite suite = new XmlSuite();
@@ -373,44 +380,78 @@ public class obug {
             // New list for the classes
             List<XmlClass> classes = new ArrayList<XmlClass>();
 
-            String one = "" + modle + "";
-            Class firstonly = Class.forName(one);
-            // Putting the classes to the list
-            classes.add(new XmlClass(firstonly));
+            try {
+                FileReader fr = new FileReader("" + projectPath + "/LocationsList.json");
+                BufferedReader br = new BufferedReader(fr);
+                String currentLine;
+                String one = "" + modle + "";
+                String getJavaLine = null;
+                while ((currentLine = br.readLine()) != null) {
+                    for (int x = 0; x < currentLine.length(); x++) {
+                        getJavaLine = currentLine.substring(currentLine.lastIndexOf("\\") + 1).replace(".java", "");
+                        boolean line = getJavaLine.equals(one);
+                        if (line == true) {
+                            String curentLine = currentLine ;
+                            String packagee = curentLine.substring(curentLine.substring(0, curentLine.lastIndexOf("\\")).lastIndexOf("\\") +1).replace("\\"+one+".java","");
+
+                            Class firstonly = Class.forName(""+packagee+"."+one);
+                            // Putting the classes to the list
+                            classes.add(new XmlClass(firstonly));
+
+                            // Add classes to test
+                            test.setClasses(classes);
 
 
-            // Add classes to test
-            test.setClasses(classes);
+                            // call createTest method and pass the name of TestCase- Based on your requirement
+//                            tests = extent.createTest(modle);
+                        }
+                    }
+                }
 
-            // call createTest method and pass the name of TestCase- Based on your requirement
-            tests = extent.createTest(modle);
+//            ITestResult result = null ;
+//            if (result.getStatus()==ITestResult.FAILURE) {
+//                tests.log(Status.PASS, MarkupHelper.createLabel(result.getName() + "Test Case Failed", ExtentColor.RED));
+//                tests.fail(result.getThrowable());
+//                String temp = getScreenshot(driver);
+//                tests.fail(result.getThrowable().getMessage(), MediaEntityBuilder.createScreenCaptureFromPath(temp).build());
+//
+//            } else if (result.getStatus() == ITestResult.SUCCESS) {
+//                tests.log(Status.PASS , MarkupHelper.createLabel(result.getName() + "Test Case Passed", ExtentColor.GREEN));
+//            } else if (result.getStatus()== SKIP){
+//                tests.log(Status.SKIP,MarkupHelper.createLabel(result.getName() + "Test Case Skipped", ExtentColor.YELLOW));
+//            }
 
-            ITestResult result = null ;
-            if (result.getStatus()==ITestResult.FAILURE) {
-                tests.log(Status.PASS, MarkupHelper.createLabel(result.getName() + "Test Case Failed", ExtentColor.RED));
-                tests.fail(result.getThrowable());
-                String temp = getScreenshot(driver);
-                tests.fail(result.getThrowable().getMessage(), MediaEntityBuilder.createScreenCaptureFromPath(temp).build());
+                i++;
 
-            } else if (result.getStatus() == ITestResult.SUCCESS) {
-                tests.log(Status.PASS , MarkupHelper.createLabel(result.getName() + "Test Case Passed", ExtentColor.GREEN));
-            } else if (result.getStatus()== SKIP){
-                tests.log(Status.SKIP,MarkupHelper.createLabel(result.getName() + "Test Case Skipped", ExtentColor.YELLOW));
-            }
+                DesiredCapabilities capabilities = new DesiredCapabilities();
+                capabilities.setCapability("PLATFORM_VERSION", PLATFORM_VERSION);
+                capabilities.setCapability("AUTOMATION_NAME", AUTOMATION_NAME);
+                capabilities.setCapability("deviceName", DEVICE_NAME);
+                capabilities.setCapability("appActivity", appActivity);
+                capabilities.setCapability("appPackage", appPackage);
+                capabilities.setCapability(MobileCapabilityType.NO_RESET, NO_RESET);
+                capabilities.setCapability("host", host);
+                driver = new AndroidDriver<>(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
 
-            i++;
+                String caps = capabilities.toString();
+                Map<String, String> cap = new HashMap<>();
+                cap.put("capabilities", caps);
+                suite.setParameters(cap);
 
-            // New list for the Suites
-            List<XmlSuite> suites = new ArrayList<XmlSuite>();
+                // New list for the Suites
+                List<XmlSuite> suites = new ArrayList<XmlSuite>();
 
-            // Add suite to the list
-            suites.add(suite);
+                // Add suite to the list
+                suites.add(suite);
 
 
-            // Creating the xml
-            suite.setName("Full Regression Pack" + " " + "" + "->" + " " + "" + modle + " " + "Script");
-            testNG.setXmlSuites(suites);
-            testNG.run();
+                // Creating the xml
+                suite.setName("Full Regression Pack" + " " + "" + "->" + " " + "" + modle + " " + "Script");
+                testNG.setXmlSuites(suites);
+                testNG.run();
+
+
+
 
            /* if (tests.getStatus().toString().equals("fail")) {
                 testResult.setStatus(ITestResult.FAILURE);
@@ -429,6 +470,12 @@ public class obug {
             }*/
 
 
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                System.out.println("Opss .. SomeThing Went Wrong");
+
+            }
         }
     }
 
@@ -437,7 +484,7 @@ public class obug {
 
 
     @BeforeSuite
-    private static void setup() {
+    public static void setup() {
         String projectPath = System.getProperty("user.dir");
         // Create Object of ExtentHtmlReporter and provide the path where you want to generate the report
         // I used (.) in path where represent the current working directory
@@ -452,36 +499,36 @@ public class obug {
         reporter.config().setChartVisibilityOnOpen(true);
         reporter.config().setReportName("Regression Pack Report");
         reporter.config().setTestViewChartLocation(ChartLocation.TOP);
-        reporter.config().setTheme(Theme.DARK);
+        reporter.config().setTheme(Theme.STANDARD);
         reporter.config().setTimeStampFormat("EEEE, MMMM dd, yyyy, hh:mm a '('zzz')'");
 
     }
 
     @AfterMethod
-    private static void setResult(ITestResult result) throws IOException, InterruptedException {
-        if (result.getStatus()==ITestResult.FAILURE) {
+    public static void setResult(ITestResult result) throws IOException, InterruptedException {
+        if (result.getStatus() == ITestResult.FAILURE) {
             tests.log(Status.PASS, MarkupHelper.createLabel(result.getName() + "Test Case Failed", ExtentColor.RED));
             tests.fail(result.getThrowable());
             String temp = getScreenshot(driver);
             tests.fail(result.getThrowable().getMessage(), MediaEntityBuilder.createScreenCaptureFromPath(temp).build());
 
         } else if (result.getStatus() == ITestResult.SUCCESS) {
-            tests.log(Status.PASS , MarkupHelper.createLabel(result.getName() + "Test Case Passed", ExtentColor.GREEN));
-        } else if (result.getStatus()== SKIP){
-            tests.log(Status.SKIP,MarkupHelper.createLabel(result.getName() + "Test Case Skipped", ExtentColor.YELLOW));
+            tests.log(Status.PASS, MarkupHelper.createLabel(result.getName() + "Test Case Passed", ExtentColor.GREEN));
+        } else if (result.getStatus() == SKIP) {
+            tests.log(Status.SKIP, MarkupHelper.createLabel(result.getName() + "Test Case Skipped", ExtentColor.YELLOW));
         }
 
         extent.flush();
         openRegression_Report();
     }
 
-   /* @AfterMethod
-    public void tearDown() throws IOException, InterruptedException {
-        // This will add another test in report
+    /* @AfterMethod
+     public void tearDown() throws IOException, InterruptedException {
+         // This will add another test in report
 
-    }
-*/
-    private static String getScreenshot(WebDriver driver) {
+     }
+ */
+    public static String getScreenshot(WebDriver driver) {
         TakesScreenshot ts = (TakesScreenshot) driver;
 
         File src = ts.getScreenshotAs(OutputType.FILE);
@@ -500,7 +547,7 @@ public class obug {
     }
 
 
-    private static void openRegression_Report() throws IOException, InterruptedException {
+    public static void openRegression_Report() throws IOException, InterruptedException {
 
         String command = "";
         boolean isWindows = System.getProperty("os.name")
