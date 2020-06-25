@@ -12,3 +12,4 @@ Autonomous Testing.iml
 .idea/
 .DS_Store
 OBug.iml
+allure-results/

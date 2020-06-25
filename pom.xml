@@ -10,7 +10,7 @@
 
 
     <name>OBug</name>
-    <description>ALM Defects Counter</description>
+    <description>Test.ALM Defects Counter</description>
     <url>https://github.com/Osama-O5/OSSRH-55931</url>
 
     <organization>
@@ -94,22 +94,20 @@
         </dependency>
 
         <dependency>
-            <groupId>com.aventstack</groupId>
-            <artifactId>extentreports</artifactId>
-            <version>3.1.5</version>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-testng</artifactId>
+            <version>2.12.1</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.aventstack</groupId>
-            <artifactId>extentreports</artifactId>
-            <version>3.1.5</version>
-        </dependency>
-
 
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>2.10.0</version>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -172,7 +170,17 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.1</version>
                 <configuration>
-                    <testFailureIgnore>true</testFailureIgnore>
+<!--                    <testFailureIgnore>true</testFailureIgnore>-->
+                    <systemProperties>
+                       <!-- <property>
+                          <name>allure.results.directory</name>
+                          <value>/Reports/allure-results</value>
+                        </property>-->
+                        <allure.results.directory>Reports/allure-results</allure.results.directory>
+<!--
+                        <allure.report.directory>Reports/allure-report</allure.report.directory>
+-->
+                    </systemProperties>
                 </configuration>
             </plugin>
 
