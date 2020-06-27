@@ -38,7 +38,7 @@
         <connection>scm:git:git://github.com/Osama-O5/OSSRH-55931.git</connection>
         <developerConnection>scm:git:git@github.com/Osama-O5/OSSRH-55931.git</developerConnection>
         <url>https://github.com/Osama-O5/OSSRH-55931</url>
-        <tag>1.2.6</tag>
+        <tag>1.2.7</tag>
     </scm>
 
 
