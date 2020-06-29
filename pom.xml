@@ -4,7 +4,7 @@
 
     <groupId>com.github.Osama-O5</groupId>
     <artifactId>OBug</artifactId>
-    <version>1.2.7</version>
+    <version>1.2.8-SNAPSHOT</version>
     <packaging>jar</packaging>
 
 
@@ -38,7 +38,7 @@
         <connection>scm:git:git://github.com/Osama-O5/OSSRH-55931.git</connection>
         <developerConnection>scm:git:git@github.com/Osama-O5/OSSRH-55931.git</developerConnection>
         <url>https://github.com/Osama-O5/OSSRH-55931</url>
-        <tag>OBug-1.2.7</tag>
+        <tag>1.2.6</tag>
     </scm>
 
 
