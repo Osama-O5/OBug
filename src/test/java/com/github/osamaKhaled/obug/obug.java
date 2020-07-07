@@ -410,10 +410,8 @@ public class obug  {
         String lastNa;
 
         LinkedHashSet<String> hashSet = new LinkedHashSet<>(pack);
+        LinkedHashSet<String> RegressionPackScripts = new LinkedHashSet<>();
         ArrayList<String> listWithoutDuplicates = new ArrayList<>(hashSet);
-        System.out.println("Regression Pack Contains :" + listWithoutDuplicates + "");
-        System.out.println("Please Wait ...");
-        System.out.println("We Are Preparing Your Regression Pack .........");
         for (String modle : listWithoutDuplicates) {
             int i = 0;
 
@@ -433,59 +431,89 @@ public class obug  {
                         if (line == true) {
                             String curentLine = currentLine;
                             String packagee = curentLine.substring(curentLine.substring(0, curentLine.lastIndexOf("\\")).lastIndexOf("\\") + 1).replace("\\" + one + ".java", "");
-
-                            Class firstonly = Class.forName("" + packagee + "." + one);
-                            // Putting the classes to the list
-                            classes.add(new XmlClass(firstonly));
-                            // Add classes to test
-                            test.setClasses(classes);
+                            if (RegressionPackageName != "") {
+                                if (packagee.equals(RegressionPackageName)) {
+                                    Class firstonly = Class.forName("" + packagee + "." + one);
+                                    // Putting the classes to the list
+                                    classes.add(new XmlClass(firstonly));
+                                    // Add classes to test
+                                    test.setClasses(classes);
+                                    for (String script : listWithoutDuplicates) {
+                                        if (one.equals(script)){
+                                            RegressionPackScripts.add(script);
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                Class firstonly = Class.forName("" + packagee + "." + one);
+                                // Putting the classes to the list
+                                classes.add(new XmlClass(firstonly));
+                                // Add classes to test
+                                test.setClasses(classes);
+                                for (String script : listWithoutDuplicates) {
+                                    if (one == script ){
+                                        RegressionPackScripts.add(script);
+                                    }
+                                }
+                            }
                         }
-
+                        // call createTest method and pass the name of TestCase- Based on your requirement
                     }
 
                 }
 
                 i++;
 
+             /*   testNG.setUseDefaultListeners(true);
+                testNG.addListener((ITestNGListener) tla);*/
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
                 System.out.println("Opss .. SomeThing Went Wrong");
             }
 
-//            Map<String, Object> capMap;
-//            capMap = capabilities.asMap();
-//            Map<String, String> cap = new HashMap<>();
-//            capKeys = capMap.keySet().toArray();
-//            capValues = capMap.values().toArray();
-//            Object key;
-//            Object value;
-//            for (int j = 0; j < capMap.size(); j++) {
-//                key = capKeys[j];
-//                value = capValues[j];
-//                cap.put(key.toString(), value.toString());
+            Map<String, Object> capMap;
+            capMap = capabilities.asMap();
+            Map<String, String> cap = new HashMap<>();
+            capKeys = capMap.keySet().toArray();
+            capValues = capMap.values().toArray();
+            Object key;
+            Object value;
+            for (int j = 0; j < capMap.size(); j++) {
+                key = capKeys[j];
+                value = capValues[j];
+                cap.put(key.toString(), value.toString());
             }
             suite.setName("Full Regression Pack");
-//            suite.setParameters(cap);
-        suites.add(suite);
-        testNG.setXmlSuites(suites);
-        testNG.setConfigFailurePolicy(XmlSuite.FailurePolicy.CONTINUE);
-        testNG.run();
+            suite.setParameters(cap);
+        }
+        if (RegressionPackScripts.size() != 0) {
+            System.out.println("Regression Pack Contains :" + RegressionPackScripts + "");
+            System.out.println("Please Wait ...");
+            System.out.println("We Are Preparing Your Regression Pack .........");
 
-/*
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    openRegression_Report();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        thread.start();
-        thread.join();
-        thread.run();*/
+
+            // Creating the xml
+            suites.add(suite);
+            testNG.setXmlSuites(suites);
+            testNG.setConfigFailurePolicy(XmlSuite.FailurePolicy.CONTINUE);
+            testNG.run();
+      /*  tests.log(Status.INFO, "Test Steps");
+//        for (int i = 0; i < tla.toString().length() ; i++) {
+//            if (tla.toString().equals("passed")) {
+                getResult((ITestResult) tla.getPassedTests());
+//            } else if (tla.toString().equals("failed")) {
+                getResult((ITestResult) tla.getFailedTests());
+//            } else {
+                getResult((ITestResult) tla.getSkippedTests());
+//            }
+//        }
+        extent.flush();*/
+        } else {
+            System.out.println("Sorry .. We didn`t Found Scripts In Your Project Matches with The Affected Modules which we Found to Run");
+        }
+
     }
 
     public static void criticalRegressionPack() {
