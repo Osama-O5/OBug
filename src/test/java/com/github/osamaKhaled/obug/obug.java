@@ -431,6 +431,7 @@ public class obug  {
                         if (line == true) {
                             String curentLine = currentLine;
                             String packagee = curentLine.substring(curentLine.substring(0, curentLine.lastIndexOf("\\")).lastIndexOf("\\") + 1).replace("\\" + one + ".java", "");
+                            // if there isn`t a package name
                             if (RegressionPackageName != "") {
                                 if (packagee.equals(RegressionPackageName)) {
                                     Class firstonly = Class.forName("" + packagee + "." + one);
@@ -452,7 +453,7 @@ public class obug  {
                                 // Add classes to test
                                 test.setClasses(classes);
                                 for (String script : listWithoutDuplicates) {
-                                    if (one == script ){
+                                    if (one.equals(script)){
                                         RegressionPackScripts.add(script);
                                     }
                                 }
@@ -513,7 +514,7 @@ public class obug  {
         } else {
             System.out.println("Sorry .. We didn`t Found Scripts In Your Project Matches with The Affected Modules which we Found to Run");
         }
-
+        
     }
 
     public static void criticalRegressionPack() {
