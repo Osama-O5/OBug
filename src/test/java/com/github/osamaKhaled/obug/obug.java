@@ -347,7 +347,7 @@ public class obug  {
      *
      */
     @Test
-    public static void fullRegressionPack() throws Exception {
+    public static void fullRegressionPack(String RegressionPackageName) throws Exception {
         AutomaticMatch();
         String projectPath = System.getProperty("user.dir");
         String w = "Reports\\ScreenShots";
