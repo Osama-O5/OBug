@@ -4,7 +4,7 @@
 
     <groupId>com.github.Osama-O5</groupId>
     <artifactId>OBug</artifactId>
-    <version>1.2.8-SNAPSHOT</version>
+    <version>1.3.2</version>
     <packaging>jar</packaging>
 
 
@@ -30,17 +30,16 @@
             <name>osama khaled</name>
             <email>osama_o5@hotmail.com</email>
             <organization>com.github.Osama-O5</organization>
-            <organizationUrl>https://github.com/Osama-O5/OSSRH-55931</organizationUrl>
+            <organizationUrl>http://github.com/Osama-O5/OSSRH-55931</organizationUrl>
         </developer>
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/Osama-O5/OSSRH-55931.git</connection>
-        <developerConnection>scm:git:git@github.com/Osama-O5/OSSRH-55931.git</developerConnection>
+        <connection>scm:git:https://github.com/Osama-O5/OSSRH-55931.git</connection>
+        <developerConnection>scm:git:https://github.com/Osama-O5/OSSRH-55931.git</developerConnection>
         <url>https://github.com/Osama-O5/OSSRH-55931</url>
-        <tag>1.2.6</tag>
+        <tag>HEAD</tag>
     </scm>
-
 
     <distributionManagement>
         <snapshotRepository>
@@ -113,7 +112,7 @@
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>libs/</classpathPrefix>
                             <mainClass>
-                                com.github.osamaKhaled.obug.obug
+                               com.github.osamaKhaled.obug.obug
                             </mainClass>
                         </manifest>
                     </archive>
