@@ -76,7 +76,7 @@ public class obug  {
      * Setting up the browser capabilites
      *
      */
-    public static void Caps(String Driver, String Driver_Path) {
+    public void Caps(String Driver, String Driver_Path) {
         DesiredCapabilities caps = new DesiredCapabilities();
         String path = System.getProperty("user.dir");
         String allurePath = path + "/Reports/allure-results";
@@ -95,7 +95,7 @@ public class obug  {
      * Setting up ALM Login access
      *
      */
-    public static void Login(String Username, String Password) throws Exception {
+    public void Login(String Username, String Password) throws Exception {
         WebDriverWait wait = new WebDriverWait(driver, 30);
         wait.until(ExpectedConditions.elementToBeClickable(By.id("j_username")));
         WebElement User = driver.findElement(By.id("j_username"));
@@ -114,7 +114,7 @@ public class obug  {
      * Setting up the Defects Filtration
      *
      */
-    public static void URlQuery(String Domain_Name, String Project_Name, String Status, String Device_Type, String Priority, String Severity, String Detected_by, String Component_name, String Creation_Time) throws IOException, InterruptedException {
+    public void URlQuery(String Domain_Name, String Project_Name, String Status, String Device_Type, String Priority, String Severity, String Detected_by, String Component_name, String Creation_Time) throws IOException, InterruptedException {
         driver.navigate().to("https://alm.vodafone.com/qcbin/rest/domains/" + Domain_Name + "/projects/" + Project_Name + "/defects?query={status[" + Status + "];user-21[" + Device_Type + "];priority[" + Priority + "];severity[" + Severity + "];detected-by[" + Detected_by + "];user-11[" + Component_name + "];creation-time[" + Creation_Time + "]}");
         list();
         ModulesReport();
@@ -347,7 +347,7 @@ public class obug  {
      *
      */
     @Test
-    public static void fullRegressionPack(String RegressionPackageName) throws Exception {
+    public void fullRegressionPack(String RegressionPackageName) throws Exception {
         AutomaticMatch();
         String projectPath = System.getProperty("user.dir");
         String w = "Reports\\ScreenShots";
@@ -520,9 +520,9 @@ public class obug  {
     public static void criticalRegressionPack() {
     }
 
-    /*@Parameters
+    @Parameters
     @BeforeSuite
-    public static void MobileCapability(String deviceName, String platform, String PLATFORM_VERSION, String AUTOMATION_NAME, String appActivity, String appPackage, String No_RESET) throws MalformedURLException {
+    public void MobileCapability(String deviceName, String platform, String PLATFORM_VERSION, String AUTOMATION_NAME, String appActivity, String appPackage, String No_RESET) throws MalformedURLException {
         capabilities = new DesiredCapabilities();
         capabilities.setCapability("platform", platform);
         capabilities.setCapability("deviceName", deviceName);
@@ -542,18 +542,8 @@ public class obug  {
 
         appiumDriver = new AndroidDriver<>(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
 
-
-      *//*  //Report
-        ExtentHtmlReporter reporter = new ExtentHtmlReporter(System.getProperty("user.dir") + "/Reports/Regression_Report.html");
-        extent = new ExtentReports();
-
-        reporter.config().setEncoding("utf-8");
-        reporter.config().setReportName("Regression Pack Report");
-        reporter.config().setTheme(Theme.STANDARD);
-        extent.attachReporter(reporter);*//*
     }
 
-*/
   /*  @AfterMethod(alwaysRun = true)
     public static void getResult(ITestResult result) {
         if (result.getStatus() == ITestResult.FAILURE) {
